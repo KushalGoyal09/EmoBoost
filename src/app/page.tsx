@@ -1,101 +1,393 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+
+interface FormData {
+  email: string;
+  age: string;
+  gender: string;
+  timeOfDay: string;
+  location: string;
+  mood: string;
+  weather: string;
+  activity: string;
+  moodIntensity: number;
+  sleepQuality: number;
+}
+
+export default function Component() {
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    age: "",
+    gender: "",
+    timeOfDay: "",
+    location: "",
+    mood: "",
+    weather: "",
+    activity: "",
+    moodIntensity: 5,
+    sleepQuality: 5,
+  });
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name: keyof FormData) => (value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSliderChange = (name: keyof FormData) => (value: number[]) => {
+    setFormData((prev) => ({ ...prev, [name]: value[0] }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(formData);
+    setIsSubmitted(true);
+  };
+
+  if (!mounted) {
+    return null; // Prevent hydration errors by not rendering anything on the server
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 p-4">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Card className="w-full max-w-2xl mx-auto shadow-2xl bg-white/90 backdrop-blur-md">
+          <CardHeader className="relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-90" />
+            <CardTitle className="relative text-3xl font-bold text-white z-10">
+              User Survey
+            </CardTitle>
+            <CardDescription className="relative text-blue-100 z-10">
+              Please answer the following questions about your current state.
+            </CardDescription>
+            <Sparkles className="absolute top-4 right-4 text-yellow-300 animate-pulse" />
+          </CardHeader>
+          <CardContent className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <Label htmlFor="email" className="text-lg font-semibold">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  onChange={handleInputChange}
+                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                />
+              </motion.div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+              <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Label htmlFor="age" className="text-lg font-semibold">
+                  Enter your age
+                </Label>
+                <Input
+                  id="age"
+                  name="age"
+                  type="number"
+                  required
+                  onChange={handleInputChange}
+                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                />
+              </motion.div>
+
+              <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <Label className="text-lg font-semibold">
+                  Select your gender
+                </Label>
+                <Select
+                  name="gender"
+                  onValueChange={handleSelectChange("gender")}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
+                    <SelectItem value="non-binary">Non-binary</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value="prefer-not-to-say">
+                      Prefer not to say
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </motion.div>
+
+              <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <Label className="text-lg font-semibold">
+                  Indicate the current time of day
+                </Label>
+                <RadioGroup
+                  name="timeOfDay"
+                  onValueChange={handleSelectChange("timeOfDay")}
+                  className="flex flex-wrap gap-4"
+                >
+                  {["morning", "afternoon", "evening", "night"].map((time) => (
+                    <div key={time} className="flex items-center space-x-2">
+                      <RadioGroupItem value={time} id={time} />
+                      <Label htmlFor={time} className="capitalize">
+                        {time}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </motion.div>
+
+              <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+              >
+                <Label className="text-lg font-semibold">
+                  Enter your current location
+                </Label>
+                <RadioGroup
+                  name="location"
+                  onValueChange={handleSelectChange("location")}
+                  className="flex flex-wrap gap-4"
+                >
+                  {["home", "public-space", "work", "outside"].map(
+                    (location) => (
+                      <div
+                        key={location}
+                        className="flex items-center space-x-2"
+                      >
+                        <RadioGroupItem value={location} id={location} />
+                        <Label htmlFor={location} className="capitalize">
+                          {location.replace("-", " ")}
+                        </Label>
+                      </div>
+                    )
+                  )}
+                </RadioGroup>
+              </motion.div>
+
+              <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 }}
+              >
+                <Label className="text-lg font-semibold">
+                  What is your current mood
+                </Label>
+                <Select name="mood" onValueChange={handleSelectChange("mood")}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select mood" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[
+                      "relaxed",
+                      "sad",
+                      "happy",
+                      "anxious",
+                      "stressed",
+                      "anger",
+                    ].map((mood) => (
+                      <SelectItem
+                        key={mood}
+                        value={mood}
+                        className="capitalize"
+                      >
+                        {mood}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </motion.div>
+
+              <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <Label className="text-lg font-semibold">
+                  Describe the current weather in your area
+                </Label>
+                <Select
+                  name="weather"
+                  onValueChange={handleSelectChange("weather")}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select weather" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {["snowy", "cloudy", "rainy", "sunny"].map((weather) => (
+                      <SelectItem
+                        key={weather}
+                        value={weather}
+                        className="capitalize"
+                      >
+                        {weather}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </motion.div>
+
+              <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.9 }}
+              >
+                <Label className="text-lg font-semibold">
+                  Specify the activity you are engaged in currently
+                </Label>
+                <Select
+                  name="activity"
+                  onValueChange={handleSelectChange("activity")}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select activity" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {["relaxing", "socializing", "working", "exercising"].map(
+                      (activity) => (
+                        <SelectItem
+                          key={activity}
+                          value={activity}
+                          className="capitalize"
+                        >
+                          {activity}
+                        </SelectItem>
+                      )
+                    )}
+                  </SelectContent>
+                </Select>
+              </motion.div>
+
+              <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1 }}
+              >
+                <Label className="text-lg font-semibold">
+                  On a scale of 1 to 10, rate how intense your current mood is
+                </Label>
+                <Slider
+                  min={1}
+                  max={10}
+                  step={1}
+                  defaultValue={[5]}
+                  onValueChange={handleSliderChange("moodIntensity")}
+                  className="my-4"
+                />
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Very low</span>
+                  <span>Extremely high</span>
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.1 }}
+              >
+                <Label className="text-lg font-semibold">
+                  Rate the quality of your sleep from 1 to 10
+                </Label>
+                <Slider
+                  min={1}
+                  max={10}
+                  step={1}
+                  defaultValue={[5]}
+                  onValueChange={handleSliderChange("sleepQuality")}
+                  className="my-4"
+                />
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Very poor</span>
+                  <span>Excellent</span>
+                </div>
+              </motion.div>
+            </form>
+          </CardContent>
+          <CardFooter className="bg-gray-50 rounded-b-lg">
+            <motion.div
+              className="w-full"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button
+                onClick={handleSubmit}
+                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-3 rounded-full transition-all duration-200"
+              >
+                {isSubmitted ? (
+                  <>
+                    <CheckCircle className="mr-2" />
+                    Submitted
+                  </>
+                ) : (
+                  "Submit"
+                )}
+              </Button>
+            </motion.div>
+          </CardFooter>
+        </Card>
+      </motion.div>
     </div>
   );
 }
