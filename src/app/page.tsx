@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Sparkles } from "lucide-react";
+import { CheckCircle, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface FormData {
@@ -78,302 +78,251 @@ export default function Component() {
   };
 
   if (!mounted) {
-    return null; // Prevent hydration errors by not rendering anything on the server
+    return null;
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        className="w-full max-w-2xl"
       >
-        <Card className="w-full max-w-2xl mx-auto shadow-2xl bg-white/90 backdrop-blur-md">
-          <CardHeader className="relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-90" />
-            <CardTitle className="relative text-3xl font-bold text-white z-10">
+        <Card className="shadow-xl bg-white">
+          <CardHeader className="relative overflow-hidden bg-blue-600 text-white">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800 opacity-90" />
+            <CardTitle className="relative text-3xl font-bold z-10">
               User Survey
             </CardTitle>
             <CardDescription className="relative text-blue-100 z-10">
               Please answer the following questions about your current state.
             </CardDescription>
-            <Sparkles className="absolute top-4 right-4 text-yellow-300 animate-pulse" />
+            <ChevronRight className="absolute top-4 right-4 text-white animate-pulse" />
           </CardHeader>
           <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
+              {[
+                { name: "email", label: "Email", type: "email" },
+                { name: "age", label: "Enter your age", type: "number" },
+              ].map((field, index) => (
+                <motion.div
+                  key={field.name}
+                  className="space-y-2"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Label
+                    htmlFor={field.name}
+                    className="text-lg font-semibold text-gray-700"
+                  >
+                    {field.label}
+                  </Label>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type={field.type}
+                    required
+                    onChange={handleInputChange}
+                    className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 border-gray-300"
+                  />
+                </motion.div>
+              ))}
+
               <motion.div
                 className="space-y-2"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <Label htmlFor="email" className="text-lg font-semibold">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  onChange={handleInputChange}
-                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
-                />
-              </motion.div>
-
-              <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <Label htmlFor="age" className="text-lg font-semibold">
-                  Enter your age
-                </Label>
-                <Input
-                  id="age"
-                  name="age"
-                  type="number"
-                  required
-                  onChange={handleInputChange}
-                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
-                />
-              </motion.div>
-
-              <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <Label className="text-lg font-semibold">
+                <Label className="text-lg font-semibold text-gray-700">
                   Select your gender
                 </Label>
                 <Select
                   name="gender"
                   onValueChange={handleSelectChange("gender")}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full border-gray-300">
                     <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="non-binary">Non-binary</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                    <SelectItem value="prefer-not-to-say">
-                      Prefer not to say
-                    </SelectItem>
+                    {[
+                      "male",
+                      "female",
+                      "non-binary",
+                      "other",
+                      "prefer-not-to-say",
+                    ].map((gender) => (
+                      <SelectItem
+                        key={gender}
+                        value={gender}
+                        className="capitalize"
+                      >
+                        {gender.replace("-", " ")}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </motion.div>
 
-              <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-              >
-                <Label className="text-lg font-semibold">
-                  Indicate the current time of day
-                </Label>
-                <RadioGroup
-                  name="timeOfDay"
-                  onValueChange={handleSelectChange("timeOfDay")}
-                  className="flex flex-wrap gap-4"
+              {[
+                {
+                  name: "timeOfDay",
+                  label: "Indicate the current time of day",
+                  options: ["morning", "afternoon", "evening", "night"],
+                },
+                {
+                  name: "location",
+                  label: "Enter your current location",
+                  options: ["home", "public-space", "work", "outside"],
+                },
+              ].map((field, index) => (
+                <motion.div
+                  key={field.name}
+                  className="space-y-2"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + index * 0.1 }}
                 >
-                  {["morning", "afternoon", "evening", "night"].map((time) => (
-                    <div key={time} className="flex items-center space-x-2">
-                      <RadioGroupItem value={time} id={time} />
-                      <Label htmlFor={time} className="capitalize">
-                        {time}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </motion.div>
-
-              <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6 }}
-              >
-                <Label className="text-lg font-semibold">
-                  Enter your current location
-                </Label>
-                <RadioGroup
-                  name="location"
-                  onValueChange={handleSelectChange("location")}
-                  className="flex flex-wrap gap-4"
-                >
-                  {["home", "public-space", "work", "outside"].map(
-                    (location) => (
-                      <div
-                        key={location}
-                        className="flex items-center space-x-2"
-                      >
-                        <RadioGroupItem value={location} id={location} />
-                        <Label htmlFor={location} className="capitalize">
-                          {location.replace("-", " ")}
+                  <Label className="text-lg font-semibold text-gray-700">
+                    {field.label}
+                  </Label>
+                  <RadioGroup
+                    name={field.name}
+                    onValueChange={handleSelectChange(
+                      field.name as keyof FormData
+                    )}
+                    className="flex flex-wrap gap-4"
+                  >
+                    {field.options.map((option) => (
+                      <div key={option} className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          value={option}
+                          id={`${field.name}-${option}`}
+                        />
+                        <Label
+                          htmlFor={`${field.name}-${option}`}
+                          className="capitalize text-gray-600"
+                        >
+                          {option.replace("-", " ")}
                         </Label>
                       </div>
-                    )
-                  )}
-                </RadioGroup>
-              </motion.div>
-
-              <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7 }}
-              >
-                <Label className="text-lg font-semibold">
-                  What is your current mood
-                </Label>
-                <Select name="mood" onValueChange={handleSelectChange("mood")}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select mood" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[
-                      "relaxed",
-                      "sad",
-                      "happy",
-                      "anxious",
-                      "stressed",
-                      "anger",
-                    ].map((mood) => (
-                      <SelectItem
-                        key={mood}
-                        value={mood}
-                        className="capitalize"
-                      >
-                        {mood}
-                      </SelectItem>
                     ))}
-                  </SelectContent>
-                </Select>
-              </motion.div>
+                  </RadioGroup>
+                </motion.div>
+              ))}
 
-              <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.8 }}
-              >
-                <Label className="text-lg font-semibold">
-                  Describe the current weather in your area
-                </Label>
-                <Select
-                  name="weather"
-                  onValueChange={handleSelectChange("weather")}
+              {[
+                {
+                  name: "mood",
+                  label: "What is your current mood",
+                  options: [
+                    "relaxed",
+                    "sad",
+                    "happy",
+                    "anxious",
+                    "stressed",
+                    "anger",
+                  ],
+                },
+                {
+                  name: "weather",
+                  label: "Describe the current weather in your area",
+                  options: ["snowy", "cloudy", "rainy", "sunny"],
+                },
+                {
+                  name: "activity",
+                  label: "Specify the activity you are engaged in currently",
+                  options: ["relaxing", "socializing", "working", "exercising"],
+                },
+              ].map((field, index) => (
+                <motion.div
+                  key={field.name}
+                  className="space-y-2"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 + index * 0.1 }}
                 >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select weather" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {["snowy", "cloudy", "rainy", "sunny"].map((weather) => (
-                      <SelectItem
-                        key={weather}
-                        value={weather}
-                        className="capitalize"
-                      >
-                        {weather}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </motion.div>
-
-              <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.9 }}
-              >
-                <Label className="text-lg font-semibold">
-                  Specify the activity you are engaged in currently
-                </Label>
-                <Select
-                  name="activity"
-                  onValueChange={handleSelectChange("activity")}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select activity" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {["relaxing", "socializing", "working", "exercising"].map(
-                      (activity) => (
+                  <Label className="text-lg font-semibold text-gray-700">
+                    {field.label}
+                  </Label>
+                  <Select
+                    name={field.name}
+                    onValueChange={handleSelectChange(
+                      field.name as keyof FormData
+                    )}
+                  >
+                    <SelectTrigger className="w-full border-gray-300">
+                      <SelectValue placeholder={`Select ${field.name}`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {field.options.map((option) => (
                         <SelectItem
-                          key={activity}
-                          value={activity}
+                          key={option}
+                          value={option}
                           className="capitalize"
                         >
-                          {activity}
+                          {option}
                         </SelectItem>
-                      )
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </motion.div>
+              ))}
+
+              {[
+                {
+                  name: "moodIntensity",
+                  label:
+                    "On a scale of 1 to 10, rate how intense your current mood is",
+                  min: "Very low",
+                  max: "Extremely high",
+                },
+                {
+                  name: "sleepQuality",
+                  label: "Rate the quality of your sleep from 1 to 10",
+                  min: "Very poor",
+                  max: "Excellent",
+                },
+              ].map((field, index) => (
+                <motion.div
+                  key={field.name}
+                  className="space-y-2"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8 + index * 0.1 }}
+                >
+                  <Label className="text-lg font-semibold text-gray-700">
+                    {field.label}
+                  </Label>
+                  <Slider
+                    min={1}
+                    max={10}
+                    step={1}
+                    defaultValue={[5]}
+                    onValueChange={handleSliderChange(
+                      field.name as keyof FormData
                     )}
-                  </SelectContent>
-                </Select>
-              </motion.div>
-
-              <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1 }}
-              >
-                <Label className="text-lg font-semibold">
-                  On a scale of 1 to 10, rate how intense your current mood is
-                </Label>
-                <Slider
-                  min={1}
-                  max={10}
-                  step={1}
-                  defaultValue={[5]}
-                  onValueChange={handleSliderChange("moodIntensity")}
-                  className="my-4"
-                />
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Very low</span>
-                  <span>Extremely high</span>
-                </div>
-              </motion.div>
-
-              <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.1 }}
-              >
-                <Label className="text-lg font-semibold">
-                  Rate the quality of your sleep from 1 to 10
-                </Label>
-                <Slider
-                  min={1}
-                  max={10}
-                  step={1}
-                  defaultValue={[5]}
-                  onValueChange={handleSliderChange("sleepQuality")}
-                  className="my-4"
-                />
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Very poor</span>
-                  <span>Excellent</span>
-                </div>
-              </motion.div>
+                    className="my-4"
+                  />
+                  <div className="flex justify-between text-sm text-gray-500">
+                    <span>{field.min}</span>
+                    <span>{field.max}</span>
+                  </div>
+                </motion.div>
+              ))}
             </form>
           </CardContent>
-          <CardFooter className="bg-gray-50 rounded-b-lg">
+          <CardFooter className="bg-gray-50">
             <motion.div
               className="w-full"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               <Button
                 onClick={handleSubmit}
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-3 rounded-full transition-all duration-200"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-md transition-all duration-200"
               >
                 {isSubmitted ? (
                   <>
