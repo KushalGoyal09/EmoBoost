@@ -31,7 +31,7 @@ export default function LoginPage() {
       
       // If login is successful, redirect to dashboard
       router.push('/dashboard')
-    } catch (err) {
+    } catch {
       setError('Invalid email or password')
     }
   }
